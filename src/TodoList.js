@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { defaultTodos } from './initialTodos';
-
 import Todo from "./Todo"
 
-function TodoList({ todos, handleDeleteClick}){
+function TodoList({ todos, handleDeleteClick, handleEditClick, isEditing, editId}){
 
     return (
         <ul>
@@ -11,7 +8,10 @@ function TodoList({ todos, handleDeleteClick}){
                 <Todo 
                 item={todo} 
                 key={todo.id} 
+                onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
+                isEditing={isEditing}
+                editId={editId}
                 />
             )}
         </ul>

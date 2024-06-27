@@ -10,6 +10,8 @@ function App() {
   const [isEmpty, setIsEmpty] = useState(true);
   const [nextTodoContent, setNextTodoContent] = useState('');
   const [todos, setTodos] = useState(defaultTodos);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   function onChange(e){
     if(e.target.value.length > 0){
@@ -22,7 +24,6 @@ function App() {
 
   function handleAddClick(e){
     let lastId = (todos.length > 0 ? todos[todos.length - 1].id : 1);
-    const nextTodos = todos.slice();
     setTodos([
         ...todos,
         {
@@ -33,6 +34,28 @@ function App() {
     ]);
     setNextTodoContent('');
     setIsEmpty(true);
+}
+
+function handleEditClick(e, id){
+  if(!isEditing){
+    setIsEditing(true);
+    setEditId(id);
+  } else{
+      const nextTodo = todos.find((todo) => {
+        return todo.id === id;
+    });
+
+    let index = todos.findIndex((todo) => todo.id === id);
+
+    nextTodo.content = e.target.parentElement.closest('.todo-item').querySelector('input').value;
+
+    let nextTodos = todos.slice();
+    nextTodos[index] = nextTodo;
+
+    setTodos(nextTodos);
+    setEditId(null);
+    setIsEditing(false);
+  }
 }
 
 function handleDeleteClick(id){
@@ -55,7 +78,11 @@ function handleDeleteClick(id){
       />
       <TodoList
         todos={todos}
+        handleEditClick={handleEditClick}
         handleDeleteClick={handleDeleteClick}
+        isEditing={isEditing}
+        editId={editId}
+        setEditId={setEditId}
       />
       </div>
       </div>

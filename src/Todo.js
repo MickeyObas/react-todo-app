@@ -1,12 +1,18 @@
-export default function Todo({item, onDeleteClick}){
+export default function Todo({item, onDeleteClick, onEditClick, isEditing, editId}){
+
     return(
         <div className='todo-item'>
-            <li>{item.content}</li>
+            {isEditing && editId === item.id ? 
+            <input defaultValue={item.content}/> :
+            <li>{item.content}</li> 
+            }
             <div>
                 <button 
                 onClick={() => onDeleteClick(item.id)}
                 >Delete</button>
-                <button>Edit</button>
+                <button
+                onClick={(e) => onEditClick(e, item.id)}
+                >{isEditing && editId === item.id ? 'Save' : 'Edit'}</button>
                 <input type='checkbox' />
             </div>
         </div>
