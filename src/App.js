@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { AddTodoMenu } from './AddTodoMenu';
 import './App.css';
-import logo from './logo.svg';
 import TodoList from './TodoList';
 import { defaultTodos } from './initialTodos';
 
