@@ -1,25 +1,32 @@
-import logo from './logo.svg';
+import { useState } from 'react';
+import { AddTodoMenu } from './AddTodoMenu';
 import './App.css';
+import logo from './logo.svg';
+import TodoList from './TodoList';
 
 function App() {
+
+  const [isEmpty, setIsEmpty] = useState(true);
+
+  function onChange(e){
+    if(e.target.value.length > 0){
+      setIsEmpty(false);
+    } else{
+      setIsEmpty(true);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <div id='container'>
+      <div id='todoContainer'>
+      <h1>Todo Application</h1>
+      <AddTodoMenu isEmpty={isEmpty} onChange={onChange}/>
+      <TodoList />
+      </div>
+      </div>
+    </>
+  )
 }
 
 export default App;
