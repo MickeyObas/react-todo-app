@@ -23,6 +23,8 @@ body{
   padding: 20px;
   box-shadow: rgba(0,0,0,0.1);
   border-radius: 8px;
+  max-height: 425px;
+  overflow-y: scroll;
 }
 
 #todoContainer h1{
