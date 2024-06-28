@@ -1,6 +1,6 @@
 import Todo from "./Todo"
 
-function TodoList({ todos, handleDeleteClick, handleEditClick, isEditing, editId}){
+function TodoList({ todos, handleDeleteClick, handleEditClick, isEditing, editId, handleSelect}){
 
     return (
         <ul>
@@ -10,6 +10,7 @@ function TodoList({ todos, handleDeleteClick, handleEditClick, isEditing, editId
                 key={todo.id} 
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
+                onSelect={handleSelect}
                 isEditing={isEditing}
                 editId={editId}
                 />

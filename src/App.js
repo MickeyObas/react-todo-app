@@ -13,9 +13,9 @@ function App() {
   const [editId, setEditId] = useState(null);
 
   function onChange(e){
+    setNextTodoContent(e.target.value);
     if(e.target.value.length > 0){
       setIsEmpty(false);
-      setNextTodoContent(e.target.value);
     } else{
       setIsEmpty(true);
     }
@@ -34,6 +34,12 @@ function App() {
     setNextTodoContent('');
     setIsEmpty(true);
 }
+
+  function handleEnterPress(e){
+    if(e.key === 'Enter'){
+      handleAddClick();
+    }
+  }
 
 function handleEditClick(e, id){
   if(!isEditing){
@@ -64,6 +70,31 @@ function handleDeleteClick(id){
   }))
 }
 
+function handleSelect(id){
+  const index = todos.findIndex((todo) => todo.id === id);
+  const selectedTodo = todos.find((todo) => {
+    return todo.id === id;
+  })
+  const nextTodos = todos.slice();
+  
+  selectedTodo.isCompleted = !selectedTodo.isCompleted;
+  nextTodos[index] = selectedTodo;
+
+  let completedTodos = [];
+  let notCompletedTodos = [];
+
+  for(let i=0; i < todos.length; i++){
+    if(todos[i].isCompleted){
+      completedTodos.push(todos[i]);
+    } else{
+      notCompletedTodos.push(todos[i]);
+    }
+  }
+
+  setTodos([...notCompletedTodos, ...completedTodos]);  
+
+}
+
   return (
     <>
       <div id='container'>
@@ -73,12 +104,14 @@ function handleDeleteClick(id){
       isEmpty={isEmpty} 
       onChange={onChange} 
       onAddClick={handleAddClick}
+      onEnterPress={handleEnterPress}
       nextTodoContent={nextTodoContent}
       />
       <TodoList
         todos={todos}
         handleEditClick={handleEditClick}
         handleDeleteClick={handleDeleteClick}
+        handleSelect={handleSelect}
         isEditing={isEditing}
         editId={editId}
         setEditId={setEditId}

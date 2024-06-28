@@ -1,4 +1,4 @@
-export default function Todo({item, onDeleteClick, onEditClick, isEditing, editId}){
+export default function Todo({item, onDeleteClick, onEditClick, isEditing, editId,  onSelect}){
 
     return(
         <div className='todo-item'>
@@ -13,7 +13,9 @@ export default function Todo({item, onDeleteClick, onEditClick, isEditing, editI
                 <button
                 onClick={(e) => onEditClick(e, item.id)}
                 >{isEditing && editId === item.id ? 'Save' : 'Edit'}</button>
-                <input type='checkbox' />
+                <input type='checkbox' 
+                onChange={() => onSelect(item.id)}
+                />
             </div>
         </div>
     )
