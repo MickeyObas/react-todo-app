@@ -12,7 +12,7 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  function onChange(e){
+  function handleChange(e){
     setNextTodoContent(e.target.value);
     if(e.target.value.length > 0){
       setIsEmpty(false);
@@ -36,6 +36,9 @@ function App() {
 }
 
   function handleEnterPress(e){
+    if(nextTodoContent === ''){
+      return;
+    }
     if(e.key === 'Enter'){
       handleAddClick();
     }
@@ -102,7 +105,7 @@ function handleSelect(id){
       <h1>Todo Application</h1>
       <AddTodoMenu 
       isEmpty={isEmpty} 
-      onChange={onChange} 
+      onChange={handleChange} 
       onAddClick={handleAddClick}
       onEnterPress={handleEnterPress}
       nextTodoContent={nextTodoContent}
