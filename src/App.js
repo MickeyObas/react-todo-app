@@ -125,4 +125,15 @@ function handleSelect(id){
   )
 }
 
+function tasksReducer(state, action){
+  switch (action.type){
+    case '': {
+      return "Hello"
+    }
+    default: {
+      return null
+    }
+  }
+};
+
 export default App;
