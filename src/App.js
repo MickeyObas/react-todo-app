@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 import { AddTodoMenu } from './AddTodoMenu';
 import './App.css';
 import TodoList from './TodoList';
@@ -8,7 +8,9 @@ function App() {
 
   const [isEmpty, setIsEmpty] = useState(true);
   const [nextTodoContent, setNextTodoContent] = useState('');
-  const [todos, setTodos] = useState(defaultTodos);
+
+  const [todos, dispatch] = useReducer(todosReducer, defaultTodos);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
@@ -22,15 +24,13 @@ function App() {
   }
 
   function handleAddClick(e){
-    let lastId = (todos.length > 0 ? todos[todos.length - 1].id : 1);
-    setTodos([
-        ...todos,
-        {
-            id: ++lastId,
-            content: nextTodoContent,
-            isCompleted: false
-        }
-    ]);
+    dispatch({
+      type: 'added',
+      payload: {
+        content: nextTodoContent,
+        isCompleted: false
+      }
+    });
     setNextTodoContent('');
     setIsEmpty(true);
 }
@@ -49,53 +49,34 @@ function handleEditClick(e, id){
     setIsEditing(true);
     setEditId(id);
   } else{
-      const nextTodo = todos.find((todo) => {
-        return todo.id === id;
-    });
-
-    let index = todos.findIndex((todo) => todo.id === id);
-
-    nextTodo.content = e.target.parentElement.closest('.todo-item').querySelector('input').value;
-
-    let nextTodos = todos.slice();
-    nextTodos[index] = nextTodo;
-
-    setTodos(nextTodos);
+      dispatch({
+        type: 'edited',
+        payload: {
+          id: id,
+          content: e.target.parentElement.closest('.todo-item').querySelector('input').value
+        }
+      })
     setEditId(null);
     setIsEditing(false);
   }
 }
 
 function handleDeleteClick(id){
-  const nextTodos = todos.slice();
-  setTodos(nextTodos.filter((todo) => {
-    return todo.id !== id;
-  }))
+  dispatch({
+    type: 'deleted',
+    payload: {
+      id: id
+    }
+  });
 }
 
 function handleSelect(id){
-  const index = todos.findIndex((todo) => todo.id === id);
-  const selectedTodo = todos.find((todo) => {
-    return todo.id === id;
-  })
-  const nextTodos = todos.slice();
-  
-  selectedTodo.isCompleted = !selectedTodo.isCompleted;
-  nextTodos[index] = selectedTodo;
-
-  let completedTodos = [];
-  let notCompletedTodos = [];
-
-  for(let i=0; i < todos.length; i++){
-    if(todos[i].isCompleted){
-      completedTodos.push(todos[i]);
-    } else{
-      notCompletedTodos.push(todos[i]);
+  dispatch({
+    type: 'selected',
+    payload: {
+      id: id
     }
-  }
-
-  setTodos([...notCompletedTodos, ...completedTodos]);  
-
+  });
 }
 
   return (
@@ -125,15 +106,54 @@ function handleSelect(id){
   )
 }
 
-function tasksReducer(state, action){
+function todosReducer(todos, action){
   switch (action.type){
-    case '': {
-      return "Hello"
+    case 'added': {
+      let lastId = todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) : 1;
+      return [
+        ...todos,
+        {
+          id: ++lastId,
+          ...action.payload
+        }
+      ];
+    };
+
+    case 'edited': {
+      const nextTodo = todos.find((todo) => {
+        return todo.id === action.payload.id;
+      });
+      let index = todos.findIndex((todo) => todo.id === action.payload.id);
+      nextTodo.content = action.payload.content;
+      let nextTodos = todos.slice();
+      nextTodos[index] = nextTodo;
+      return nextTodos;
+      };
+
+    case 'deleted': {
+      return [
+        ...todos.filter((todo) => todo.id !== action.payload.id)
+      ]
     }
-    default: {
-      return null
+    
+    case 'selected': {
+      const index = todos.findIndex((todo) => todo.id === action.payload.id);
+      const nextTodos = todos.slice();
+      nextTodos[index] = {
+        ...nextTodos[index],
+        isCompleted: !nextTodos[index].isCompleted
+      }
+      const sortedTodos = nextTodos.sort((a, b) => {
+        if(a.isCompleted && !b.isCompleted) return 1;
+        if(!a.isCompleted && b.isCompleted) return -1;
+        return 0;
+      })
+      return sortedTodos;
     }
-  }
+      
+      default :{
+        console.log("Default");
+    }}
 };
 
 export default App;

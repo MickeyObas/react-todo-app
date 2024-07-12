@@ -15,6 +15,7 @@ export default function Todo({item, onDeleteClick, onEditClick, isEditing, editI
                 >{isEditing && editId === item.id ? 'Save' : 'Edit'}</button>
                 <input type='checkbox' 
                 onChange={() => onSelect(item.id)}
+                checked={item.isCompleted}
                 />
             </div>
         </div>
